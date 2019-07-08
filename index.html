@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <title>Quiz</title>
+</head>
+<body>
+    <main class="main">
+        <section id="intro" class="painel intro flex-container">
+            <div class="container">
+                <div class="logo-title flex-container">
+                    <img class="idea-logo" src="img/idea.png" alt="Logo Quiz">
+                    <h1 class="title">Quiz</h1>
+                </div>
+                <form class="gameConfig" action="">
+                    <select class="combobox" name="category" title="Category">
+                        <option value="" disabled selected>Select a Category</option>
+                        <option value="sports">Sports</option>
+                    </select>
+                    <select class="combobox" name="level">
+                            <option value="" disabled selected>Select a Level</option>
+                            <option value="easy">Facil</option>
+                            <option value="medium">Medio</option>
+                            <option value="hard">Dificil</option>
+                    </select>
+                    <button class="btn play">
+                        <i class="icon fas fa-play-circle"></i>
+                        <span>Play</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+        <section id="game" class="game flex-container">
+            <div class="question-area container">
+                <h2 class="question">Question</h2>
+                <div class="show-category flex-container">
+                    <h2>Entertainment: Japanese Anime & Manga</h2>
+                </div>
+                <button class="btn reply-later">Reply Later</button>
+            </div>
+            <div class="util-area painel flex-container">
+                <div class="answers container">
+                    <div class="answerbox">
+                        <input name="answer" type="radio">
+                        <label for="answer">Answer 1</label>
+                    </div>
+                    <div class="answerbox">
+                        <input name="answer" type="radio">
+                        <label for="answer">Answer 2</label>
+                    </div>
+                    <div class="answerbox">
+                        <input name="answer" type="radio">
+                        <label for="answer">Answer 3</label>
+                    </div>
+                    <div class="answerbox">
+                        <input name="answer" type="radio">
+                        <label for="answer">Answer 4</label>
+                    </div>
+                </div>
+            </div>
+            <div class="action-area container">
+                <div class="score">
+                    <h3>Score: X</h3>
+                </div>
+                <button class="btn reply">Reply</button>
+                <button class="btn next">Next</button>
+            </div>
+            <div class="next-question">
+                <button class="btn reply-pendent">Reply Pendent Question</button>
+                <button class="btn new">Reply New Question</button>
+            </div>
+        </section>
+        <section id="final-result" class="final-result flex-container">
+            <header class="icon-result"></header>
+            <main class="result">
+                <h1>Congratulations or not!</h1>
+                <h2>Score: X</h2>
+                <h2>Question: N</h2>
+                <h2>Category: Y</h2>
+                <h2>Level: Z</h2>
+            </main>
+            <div class="container actions">
+                <button class="btn restart">
+                    <i class="icon fas fa-play-circle"></i>
+                    <span>Restart</span>
+                </button>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

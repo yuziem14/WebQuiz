@@ -1,0 +1,299 @@
+/* <-- Mobile First --> */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #353B48;
+}
+
+h1, h2, h3, h4, h5, p, label {
+    color: #fff;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    font-size: 28px;
+}
+
+h2 {
+    font-size: 22px;
+}
+
+h3 {
+    font-size: 20px;
+}
+
+label {
+    font-size: 21px;  
+}
+
+.btn {
+    font-size: 18px;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 50px;
+    cursor: default;
+}
+
+.btn:disabled {
+    background-color: rgba(131, 149, 167,0.8);
+}
+
+.combobox {
+    background-color: #778ca3;
+    border-radius: 50px;
+    border: 0;
+    padding: 12px 40px;
+    margin: 5px 0;
+}
+
+.combobox option {
+    font-weight: 700;
+    background-color: #fff;
+    color: #000;
+}
+
+
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    min-width: 320px;
+    align-self: center;
+    text-align: center;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+.painel {
+    background-color: rgba(75, 123, 236, 0.8);
+}
+
+.intro, .game, .final-result {
+    width: 100%;
+}
+
+/* <-- INTRO --> */
+
+.intro {
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+}
+
+.logo-title {
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.idea-logo {
+    width: 72px;
+    margin: 10px 0;
+}
+
+.title {
+    font-size: 50px;
+    font-weight: 900;
+}
+
+.gameConfig {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.play {
+    background-color: rgba(61, 193, 211, 0.83);
+    border: none;
+    border-radius: 20px;
+    margin-top: 30px;
+}
+
+.icon {
+    color: #000;
+}
+
+/* <-- END INTRO --> */
+
+/* <-- GAME --> */
+
+.game {
+    align-items: center;
+    justify-content: center;
+}
+
+/* <-- QUESTION AREA */
+
+.question-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.question {
+    display: inline-block;
+    width: 90%;
+    font-size: 24px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.show-category {
+    align-items: center;
+    justify-content: center;
+    width: 315px;
+    padding: 25px 0;
+    background-position: center;
+    background-image: url('../img/ribbon.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.show-category h2 {
+    display: inline-block;
+    width: 50%;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
+    margin-top: 12px;
+}
+
+.reply-later {
+    background-color:rgba(15, 185, 177, 0.83);
+    margin-top: 10px;
+}
+
+/* <-- END QUESTION AREA --> */
+
+/* <-- UTIL AREA --> */
+.util-area {
+    width: 100%;
+}
+
+
+div.answers {
+    text-align: center;
+    padding: 15px;
+    padding-left: 10px; 
+    margin: 5px 0;
+}
+
+div.answerbox {
+    padding: 8px;
+}
+
+/* <-- END UTIL AREA --> */
+
+/* <--- ACTION AREA --> */
+
+.action-area {
+    text-align: center;
+    padding: 25px 0;
+}
+
+.action-area button {
+    background-color: rgba(61, 193, 211, 0.83);
+    margin: 3px;
+    margin-top: 40px;
+}
+
+.score {
+    background-color: rgba(247, 183, 49, 0.9);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 0;
+    margin: 0 10px;
+}
+
+.score h3{
+    font-size: 22px;
+    color: #000;
+    font-weight: 600;
+}
+
+.next-question {
+    text-align: center;
+}
+
+.next-question button {
+    margin: 10px;
+    background-color:rgba(15, 185, 177, 0.83);
+}
+
+/* <--- END ACTION AREA --> */
+
+/* <-- END GAME --> */
+
+/* <-- FINAL RESULT -->*/
+
+.final-result {
+    align-items: center;
+    justify-content: center;
+}
+
+.final-result header.icon-result {
+    width: 64px;
+    height: 64px;
+    background-image: url('../img/trophy.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: 20px 0;
+}
+
+main.result {
+    width: 100%;
+    padding: 50px 0;
+    text-align: center;
+    background-color: rgba(247, 183, 49, 0.9);
+}
+
+main.result h1, main.result h2 {
+    color: #000;
+}
+
+main.result h1 {
+    margin-bottom: 20px;
+    font-weight: 900;
+    font-style: italic;
+}
+
+main.result h2 {
+    padding: 7px 0;
+    font-weight: 600;
+}
+
+.actions button {
+    background-color:rgba(15, 185, 177, 0.83);
+    margin: 50px 0;
+}
+
+/* <-- END FINAL RESULT -->*/
+
+
+/* <-- Responsive [Media Queries] --> */
+@media screen and (min-width: 460px ){
+    .score {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+}
