@@ -113,10 +113,11 @@ label {
 }
 
 .gameConfig {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     align-items: center;
     justify-content: center;
+    padding: 0 10px;
 }
 
 .play {
@@ -180,7 +181,12 @@ label {
 
 .reply-later {
     background-color:rgba(15, 185, 177, 0.83);
-    margin-top: 10px;
+    margin: 10px 0;
+}
+
+.chances {
+    color: #fdcb6e;
+    font-weight: 600;
 }
 
 /* <-- END QUESTION AREA --> */
@@ -191,14 +197,14 @@ label {
 }
 
 
-div.answers {
+.answers {
     text-align: center;
     padding: 15px;
     padding-left: 10px; 
     margin: 5px 0;
 }
 
-div.answerbox {
+.answerbox {
     padding: 8px;
 }
 
@@ -251,33 +257,32 @@ div.answerbox {
     justify-content: center;
 }
 
-.final-result header.icon-result {
+.final-result .icon-result {
     width: 64px;
     height: 64px;
-    background-image: url('../img/trophy.png');
     background-repeat: no-repeat;
     background-size: cover;
     margin: 20px 0;
 }
 
-main.result {
+.result {
     width: 100%;
     padding: 50px 0;
     text-align: center;
     background-color: rgba(247, 183, 49, 0.9);
 }
 
-main.result h1, main.result h2 {
+.result h1, .result h2 {
     color: #000;
 }
 
-main.result h1 {
+.result h1 {
     margin-bottom: 20px;
     font-weight: 900;
     font-style: italic;
 }
 
-main.result h2 {
+.result h2 {
     padding: 7px 0;
     font-weight: 600;
 }
@@ -287,8 +292,39 @@ main.result h2 {
     margin: 50px 0;
 }
 
-/* <-- END FINAL RESULT -->*/
+/* <-- END FINAL RESULT --> */
 
+/* <-- Classes for JS DOM Manipulation --> */
+.correct {
+    background-color: #2ecc71;
+    font-weight: 900;
+    transition: 1s;
+}
+
+.wrong {
+    background-color:#d63031;
+    font-weight: 900;
+    transition: 1s;
+}
+
+.winner {
+    background-color: #2ecc71;
+    transition: 1s;
+}
+
+.winner-icon {
+    background-image: url('../img/trophy.png');
+}
+
+.loser {
+    font-weight: 700;
+    background-color: #d63031;
+    transition: 1s;
+}
+
+.loser-icon {
+    background-image: url('../img/fail.png');
+}
 
 /* <-- Responsive [Media Queries] --> */
 @media screen and (min-width: 460px ){

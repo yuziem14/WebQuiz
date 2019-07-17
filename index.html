@@ -20,7 +20,7 @@
                     <h1 class="title">Quiz</h1>
                 </div>
                 <form class="gameConfig" action="">
-                    <select class="combobox" name="category" title="Category">
+                    <select class="combobox" name="category">
                         <option value="" disabled selected>Select a Category</option>
                         <option value="sports">Sports</option>
                     </select>
@@ -41,9 +41,10 @@
             <div class="question-area container">
                 <h2 class="question">Question</h2>
                 <div class="show-category flex-container">
-                    <h2>Entertainment: Japanese Anime & Manga</h2>
+                    <h2>Category</h2>
                 </div>
-                <button class="btn reply-later">Reply Later</button>
+                <button class="btn reply-later">Reply Later (0)</button>
+                <h3 class="chances">Chances: 3</h3>
             </div>
             <div class="util-area painel flex-container">
                 <div class="answers container">
@@ -72,19 +73,20 @@
                 <button class="btn reply">Reply</button>
                 <button class="btn next">Next</button>
             </div>
-            <div class="next-question">
-                <button class="btn reply-pendent">Reply Pendent Question</button>
+        </section>
+        <section id="next-question" class="next-question container">
+                <h1>Would You Like To...</h1>
+                <button class="btn reply-pendent">Reply Pending Question</button>
                 <button class="btn new">Reply New Question</button>
-            </div>
         </section>
         <section id="final-result" class="final-result flex-container">
-            <header class="icon-result"></header>
+            <header class="icon-result winner-icon"></header>
             <main class="result">
-                <h1>Congratulations or not!</h1>
-                <h2>Score: X</h2>
-                <h2>Question: N</h2>
-                <h2>Category: Y</h2>
-                <h2>Level: Z</h2>
+                <h1 class="result-title">Congratulations or not!</h1>
+                <h2 class="result-score">Score: X</h2>
+                <h2 class="result-questions">Questions: N</h2>
+                <h2 class="result-category">Category: Y</h2>
+                <h2 class="result-level">Level: Z</h2>
             </main>
             <div class="container actions">
                 <button class="btn restart">
@@ -94,5 +96,8 @@
             </div>
         </section>
     </main>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
