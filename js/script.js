@@ -14,9 +14,9 @@
         this.errors = 0;
     };
 
-    Player.prototype.winner = function(questionsObject){
-        return (questionsObject.questions.length == 0 && questionsObject.replyLater == undefined
-            && questionsObject.currentQuestion == undefined);
+    Player.prototype.winner = function(object){
+        return (object.questions.length == 0 && object.replyLater == undefined
+            && object.currentQuestion == undefined);
     }
 
     Player.prototype.loser = function(){
@@ -171,6 +171,15 @@
         document.querySelector('.main').style.display = 'flex';
     }
 
+    function clearHTMLEntities(html){
+        let decodedHTML;
+        let div = document.createElement('div');
+        div.innerHTML = `${html}`;
+        decodedHTML = div.textContent;
+        return decodedHTML;
+        //Or use the Method parseFromString from a DOM Parser Object
+    }
+
     function play(runOnFinished){
         //Get the selected category and level
         game.category.id = document.getElementsByName('category')[0].value;
@@ -178,7 +187,7 @@
         game.level = levels[document.getElementsByName('level')[0].value];
         
         //Get the questions from the API
-        axios.get(`${proxy}https://opentdb.com/api.php?amount=5&category=${game.category.id}&difficulty=${game.level.level}`)
+        axios.get(`${proxy}https://opentdb.com/api.php?amount=15&category=${game.category.id}&difficulty=${game.level.level}`)
         .then(function(json){
             let statusCode = json.data.response_code;
             if(statusCode == 1){
@@ -213,7 +222,7 @@
             //Creates a label with the answer as his text content for the previous radio button
             label = document.createElement('label');
             label.htmlFor = `answer-${i}`;
-            label.textContent = answersJSON[i];
+            label.textContent = `${clearHTMLEntities(answersJSON[i])}`;
 
             //Appends the label and the radio button as a child to the answer box div
             answerBox.appendChild(option);
@@ -224,12 +233,9 @@
     function setQuestion(questionObject){
         if(questionObject == undefined)
             return;
-
-        //Remove HTML Entities
-        //Code here
-        
-        document.querySelector('.question').textContent = questionObject.question;
-        document.querySelector('.show-category h2').textContent = questionObject.category;
+        //Removing HTML Entities
+        document.querySelector('.question').textContent = `${clearHTMLEntities(questionObject.question)}`;
+        document.querySelector('.show-category h2').textContent = `${clearHTMLEntities(questionObject.category)}`;
 
         //Adds all the answers into the AnswersJson
         const answersJSON = [];
