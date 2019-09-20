@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,12 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+        integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <link rel="shortcut icon" href="img/favicon.ico">
     <title>Quiz</title>
 </head>
+
 <body>
     <main class="main">
         <section id="intro" class="painel intro flex-container">
@@ -25,10 +28,10 @@
                         <option value="sports">Sports</option>
                     </select>
                     <select class="combobox" name="level">
-                            <option value="" disabled selected>Select a Level</option>
-                            <option value="easy">Facil</option>
-                            <option value="medium">Medio</option>
-                            <option value="hard">Dificil</option>
+                        <option value="" disabled selected>Select a Level</option>
+                        <option value="easy">Facil</option>
+                        <option value="medium">Medio</option>
+                        <option value="hard">Dificil</option>
                     </select>
                     <button class="btn play">
                         <i class="icon fas fa-play-circle"></i>
@@ -75,9 +78,9 @@
             </div>
         </section>
         <section id="next-question" class="next-question container">
-                <h1>Would You Like To...</h1>
-                <button class="btn reply-pendent">Reply Pending Question</button>
-                <button class="btn new">Reply New Question</button>
+            <h1>Would You Like To...</h1>
+            <button class="btn reply-pendent">Reply Pending Question</button>
+            <button class="btn new">Reply New Question</button>
         </section>
         <section id="final-result" class="final-result flex-container">
             <header class="icon-result winner-icon"></header>
@@ -96,8 +99,10 @@
             </div>
         </section>
     </main>
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="js/script.js"></script>
 </body>
+
 </html>
