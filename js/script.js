@@ -1,4 +1,4 @@
-(function(){
+
     const proxy = 'https://cors-anywhere.herokuapp.com/';
 
     //Player Object Prototype
@@ -8,24 +8,18 @@
         this.errors = undefined;
     };
 
-    Player.prototype.clear = function(){
+    Player.prototype.clear = function () {
         this.score = 0;
         this.questionsReplied = 0;
         this.errors = 0;
     };
 
-    Player.prototype.winner = function(object){
-        return (object.questions.length == 0 && object.replyLater == undefined
-            && object.currentQuestion == undefined);
-    }
-
-    Player.prototype.loser = function(){
+    Player.prototype.loser = function () {
         return this.errors == 3;
     }
 
     //Game Object Prototype
     const Game = function(){
-        this.questions = undefined;
         this.replied = undefined;
         this.category = {
             id: undefined,
@@ -34,11 +28,11 @@
         this.level = undefined;
         this.currentQuestion = undefined;
         this.replyLater = undefined;
+        this.isOver = undefined;
         this.player = new Player();
     };
 
     Game.prototype.clear = function(){
-        this.questions = [];
         this.replied = [];
         this.category = {
             id: undefined,
@@ -47,16 +41,8 @@
         this.level = undefined;
         this.currentQuestion = undefined;
         this.replyLater = undefined;
+        this.isOver = false;
         this.player.clear();
-    };
-
-    Game.prototype.setCurrentQuestion = function(){
-        if(this.questions.length == 0)
-            return false;
-
-        this.currentQuestion = this.questions[0];
-        this.questions.shift();
-        return true;
     };
 
     //Checks if the player selected the correct answer
@@ -67,9 +53,9 @@
         this.player.questionsReplied = this.replied.length;
         this.player.errors += correct ? 0 : 1;
 
-        this.player.score += correct ? this.level.points : (this.level.points * -1);
+        this.player.score += correct ? this.level.score : (this.level.score * -1);
 
-        if((game.currentQuestion == this.replyLater) && (correct)){
+        if((this.currentQuestion == this.replyLater) && (correct)){
             this.player.score -= 2;
         }
         
@@ -78,25 +64,24 @@
         return correct;
     }
 
-    Game.prototype.gameOver = function(){
-        let questionsObject = {questions: this.questions, replyLater: this.replyLater, currentQuestion: this.currentQuestion};
-        return (this.player.winner(questionsObject) || this.player.loser());
+    Game.prototype.gameOver = function () {
+        return (this.player.loser() || this.isOver);
     }
 
     let levels = {
         easy: {
             level: "easy",
-            points: 5,
+            score: 5,
             time: 45
         },
         medium: {
             level: "medium",
-            points: 8,
+            score: 8,
             time: 30
         },
         hard: {
             level: "hard",
-            points: 10,
+            score: 10,
             time: 15
         }
     };
@@ -106,11 +91,11 @@
 
     //Contains all categories
     let categories = [];
-
+    
     //Hide the main until the setUp
-    document.querySelector('.main').style.display = 'none';
+    document.querySelector('.main').classList.add('hide');
 
-    function setUp(){
+    function setUp () {
         //Clear all the objects to restart
         game.clear();
         
@@ -120,17 +105,12 @@
         }
 
         //Hides and show sections
-        document.getElementById('intro').style.display = 'flex';
-        document.getElementById('game').style.display = 'none';
-        document.getElementById('next-question').style.display = 'none';
-        document.getElementById('final-result').style.display = 'none';
+        document.getElementById('intro').classList.remove('hide');
+        document.getElementById('game').classList.add('hide');
+        document.getElementById('next-question').classList.add('hide');
+        document.getElementById('final-result').classList.add('hide');
 
-        //Removing CSS Classes
-        document.querySelector('#final-result .icon-result').classList.remove('winner-icon');
-        document.querySelector('#final-result .icon-result').classList.remove('loser-icon');
-        document.querySelector('#final-result .result').classList.remove('winner');
-        document.querySelector('#final-result .result').classList.remove('loser');
-
+        //Setting HTML attributes
         document.querySelector('.play').disabled = true;
         document.querySelector('.reply').disabled = false;
         document.querySelector('.reply-later').disabled = false;
@@ -168,38 +148,61 @@
             categoryDOM.appendChild(option);
         }
 
-        document.querySelector('.main').style.display = 'flex';
+        document.querySelector('.main').classList.remove('hide');
     }
 
     function clearHTMLEntities(html){
-        let decodedHTML;
-        let div = document.createElement('div');
-        div.innerHTML = `${html}`;
-        decodedHTML = div.textContent;
+        let decodedHTML = new DOMParser().parseFromString(html, 'text/html').body.textContent;
         return decodedHTML;
-        //Or use the Method parseFromString from a DOM Parser Object
+        //Or use the Inner HTML DOM Method
     }
 
-    function play(runOnFinished){
-        //Get the selected category and level
-        game.category.id = document.getElementsByName('category')[0].value;
-        game.category.title = game.category.id == "" ? "Random" : document.getElementsByName('category')[0].selectedOptions[0].textContent;
-        game.level = levels[document.getElementsByName('level')[0].value];
-        
-        //Get the questions from the API
-        axios.get(`${proxy}https://opentdb.com/api.php?amount=15&category=${game.category.id}&difficulty=${game.level.level}`)
-        .then(function(json){
-            let statusCode = json.data.response_code;
-            if(statusCode == 1){
-                swal('Sorry About That...', 'There Is Not Enough Questions To This Category!', 'error');
-                return;
+    async function requestQuestion(amount){
+        let token;
+        let request;
+        let response;
+
+        //Get the token and then generate the API URL
+        token = localStorage.getItem('token');
+        request = `${proxy}https://opentdb.com/api.php?amount=${amount}&category=${game.category.id}`;
+        request += `&difficulty=${game.level.level}`;
+
+        try {
+            response = await axios.get(`${request}&token=${token}`);
+            //If token doesn't exists, gets a new one and request a question again
+            if(response.data.response_code == 3){
+                swal('Loading Question...', 'Just a second!', 'warning');
+                await createAPIToken();
+                token = localStorage.getItem('token');
+                response = await axios.get(`${request}&token=${token}`);
+                console.log(response);
             }
-            
-            game.questions = json.data.results;
-            runOnFinished();
-        });
+
+            return response;
+        } catch (error) {
+            console.log(error);
+            return Promise.reject(error);
+        }
     }
 
+    async function createAPIToken(){
+        let json;
+
+        try {
+            json = await axios.get(`https://opentdb.com/api_token.php?command=request`);
+            
+            if(json.data.response_code != 0){
+                return Promise.reject(`Problems while token was required! ${json.data}`);
+            }
+
+            localStorage.setItem('token', json.data.token);
+        } catch (error) {
+            console.log(error);
+            return Promise.reject(error);
+        }
+    }
+
+    //swal('Sorry About That...', 'There Is Not Enough Questions To This Category!', 'error');
     function setOptions(answersDOM, answersJSON){
         let answerBox;
         let option;
@@ -222,7 +225,7 @@
             //Creates a label with the answer as his text content for the previous radio button
             label = document.createElement('label');
             label.htmlFor = `answer-${i}`;
-            label.textContent = `${clearHTMLEntities(answersJSON[i])}`;
+            label.textContent = clearHTMLEntities(answersJSON[i]);
 
             //Appends the label and the radio button as a child to the answer box div
             answerBox.appendChild(option);
@@ -234,15 +237,15 @@
         if(questionObject == undefined)
             return;
         //Removing HTML Entities
-        document.querySelector('.question').textContent = `${clearHTMLEntities(questionObject.question)}`;
-        document.querySelector('.show-category h2').textContent = `${clearHTMLEntities(questionObject.category)}`;
+        document.querySelector('.question').textContent = clearHTMLEntities(questionObject.question);
+        document.querySelector('.show-category h2').textContent = clearHTMLEntities(questionObject.category);
 
         //Adds all the answers into the AnswersJson
         const answersJSON = [];
         answersJSON.push(questionObject.correct_answer);
         for(let answer of questionObject.incorrect_answers){
             answersJSON.push(answer);
-            answersJSON.sort(function() { return 0.5 - Math.random() });
+            answersJSON.sort(() =>  0.5 - Math.random());
         }
 
         //Set the options into the answers container
@@ -269,18 +272,18 @@
 
     // SetUp and Initialize categories array with all categories from the API
     axios.get(`${proxy}https://opentdb.com/api_category.php`)
-    .then(function(json){
+    .then( (json) => {
         categories = json.data.trivia_categories;
         setUp();
     });
 
-    document.getElementsByName('level')[0].addEventListener('change', function(){
+    document.getElementsByName('level')[0].addEventListener('change', () => {
         document.querySelector('.play').disabled = (document.getElementsByName('level')[0].value != '' ? false: true);
     });
 
-    document.querySelector('.play').addEventListener('click', function(){
+    document.querySelector('.play').addEventListener('click', () => {
         //Avoids a JS Manipulation
-        if(game.questions.length != 0 || game.currentQuestion != undefined)
+        if(game.currentQuestion != undefined)
             return;
         
         let disableButton = (document.getElementsByName('level')[0].value != '' ? false: true);
@@ -290,22 +293,40 @@
             return;
         }
 
-        play(function(){
-            if(!game.setCurrentQuestion()){
-                swal('Sorry About That...', `There's No Question to Reply!`, 'error');
-                return;
-            }
+        //Get the selected category and level
+        game.category.id = document.getElementsByName('category')[0].value;
+        game.category.title = game.category.id == "" ? "Random" : document.getElementsByName('category')[0].selectedOptions[0].textContent;
+        game.level = levels[document.getElementsByName('level')[0].value];
 
-            setQuestion(game.currentQuestion);
-            document.getElementById('intro').style.display = 'none';
-            document.getElementById('game').style.display = 'flex';
-            document.getElementById('next-question').style.display = 'none';     
-        });
+        let response_code;
+
+        requestQuestion(1)
+            .then((json) => {
+                response_code = json.data.response_code;
+
+                if(response_code == 0){
+                    game.currentQuestion = json.data.results[0];
+                }
+            })
+            .catch((error) => {
+                swal('Sorry About That...', 'Try later, please! An Error Ocurred!', 'error');
+                console.log(error);
+            })
+            .finally (() => {
+                if(response_code == 0){
+                    setQuestion(game.currentQuestion);
+                    document.getElementById('intro').classList.add('hide');
+                    document.getElementById('game').classList.remove('hide');
+                    document.getElementById('next-question').classList.add('hide');
+                } else if(response_code == 4) {
+                    swal('Congratulations', 'This level of this category is finished', 'success');
+                }
+            });
     });
 
     document.querySelector('.reply').addEventListener('click', function(){
         //Avoids JS DOM Manipulation
-        if(game.currentQuestion == undefined || game.gameOver()){
+        if(game.currentQuestion == undefined || game.gameOver() == true){
             return;
         }
 
@@ -335,80 +356,119 @@
         document.querySelector('.reply').disabled = true;
     });
 
-    document.querySelector('.next').addEventListener('click', function(){
+    document.querySelector('.next').addEventListener('click', () => {
         //Checks if the player replied the question before going to the next one
         if(game.currentQuestion != undefined)
             return;
 
-        nextQuestion();
-
-        if(game.gameOver()){
-            let resultTitle = game.player.loser() ? 'Nice Try! Good Luck Next Time!' : 'Congratulations! You Win!';
-            let CSSClass = game.player.loser() ? 'loser' : 'winner';
-            let levelTitle = game.level.level;
-            levelTitle = levelTitle[0].toUpperCase() + levelTitle.substring(1, levelTitle.length);
-            
-            swal('Game Over', '', 'info');
-            
-            //Set Classes
-            document.querySelector('#final-result .icon-result').classList.add(`${CSSClass}-icon`);
-            document.querySelector('#final-result .result').classList.add(CSSClass);
-
-            //Updates the HTML with the result
-            document.querySelector('.result-title').textContent = `${resultTitle}`;
-            document.querySelector('.result-score').textContent = `Score: ${game.player.score}`;
-            document.querySelector('.result-questions').textContent = `Questions Replied: ${game.player.questionsReplied}`;
-            document.querySelector('.result-category').textContent = `Category: ${game.category.title}`;
-            document.querySelector('.result-level').textContent = `Level: ${levelTitle}`;
-            document.getElementById('game').style.display = 'none';
-            document.getElementById('final-result').style.display = 'flex';
-            return;
-        }
-
         if(game.replyLater != undefined){
-            document.getElementById('game').style.display = 'none';
-            document.getElementById('next-question').style.display = 'block';
-            if(game.questions.length == 0)
-                document.querySelector('#next-question .new').disabled = true;
-
+            nextQuestion();
+            document.getElementById('game').classList.add('hide');
+            document.getElementById('next-question').classList.remove('hide');
             return;
         }
 
-        game.setCurrentQuestion();
-        setQuestion(game.currentQuestion);
+        requestQuestion(1)
+            .then((json) => { 
+                if(json.data.response_code == 4){
+                    game.isOver = true;
+                }
+
+                if(json.data.response_code == 0){
+                    game.currentQuestion = json.data.results[0];
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                nextQuestion();
+                if(game.gameOver() == true){
+                    let resultTitle = game.player.loser() ? 'Nice Try! Good Luck Next Time!' : 'Congratulations! You Win!';
+                    //let CSSClass = game.player.loser() ? 'loser' : 'winner';
+                    let levelTitle = game.level.level;
+                    levelTitle = levelTitle[0].toUpperCase() + levelTitle.substring(1, levelTitle.length);
+                    
+                    swal('Game Over', '', 'info');
+                    
+                    //Set Classes
+                    //document.querySelector('#final-result .icon-result').classList.add(`${CSSClass}-icon`);
+                    //document.querySelector('#final-result .result').classList.add(CSSClass);
+
+                    //Updates the HTML with the result
+                    document.querySelector('.result-title').textContent = `${resultTitle}`;
+                    document.querySelector('.result-score').textContent = `Score: ${game.player.score}`;
+                    document.querySelector('.result-questions').textContent = `Questions Replied: ${game.player.questionsReplied}`;
+                    document.querySelector('.result-category').textContent = `Category: ${game.category.title}`;
+                    document.querySelector('.result-level').textContent = `Level: ${levelTitle}`;
+                    document.getElementById('game').classList.add('hide');
+                    document.getElementById('final-result').classList.remove('hide');
+                    return;
+                }
+
+                setQuestion(game.currentQuestion);
+            });
     });
 
     document.querySelector('.reply-later').addEventListener('click', function(){
+        let question = undefined;
+        
         //Avoid JS DOM Manipulation
         if(game.currentQuestion == undefined)
             return;
         
-        if(game.questions.length == 0){
-            swal('This Is The Last Question!', 'Reply Please...', 'warning');
-            return;
-        }
-        
-        game.replyLater = game.currentQuestion;
-        game.setCurrentQuestion();
-        setQuestion(game.currentQuestion);
+        requestQuestion(1)
+            .then((json) => {
+                if(json.data.response == 4){
+                    swal('This Is The Last Question!', 'Reply Please...', 'warning');
+                    return;
+                }
 
-        document.querySelector('.reply-later').textContent = 'Reply Later (1)';
-        document.querySelector('.reply-later').disabled = true;
-        document.querySelector('.reply').disabled = false;
+                if(json.data.response_code == 0)
+                    question = json.data.results[0];
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                if(question == undefined){
+                    return;
+                }
+                game.replyLater = game.currentQuestion;
+                game.currentQuestion = question;
+                setQuestion(game.currentQuestion);
+                document.querySelector('.reply-later').textContent = 'Reply Later (1)';
+                document.querySelector('.reply-later').disabled = true;
+                document.querySelector('.reply').disabled = false;
+            });
     });
 
     document.querySelector('#next-question .new').addEventListener('click', function(){    
+        let success = false;
+
         //Avoids JS DOM Manipulation
         if(game.currentQuestion != undefined)
             return;
 
-        if(!game.setCurrentQuestion())
-            return;
-
-        nextQuestion();    
-        setQuestion(game.currentQuestion);
-        document.getElementById('next-question').style.display = 'none';
-        document.getElementById('game').style.display = 'flex';
+        requestQuestion(1)
+            .then((json) => {
+                if(json.data.response_code == 0){
+                    game.currentQuestion = json.data.results[0];
+                    success = true;
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                if(!success)
+                    return;
+                
+                nextQuestion();
+                setQuestion(game.currentQuestion);
+                document.getElementById('next-question').classList.add('hide');
+                document.getElementById('game').classList.remove('hide');
+            });
     });
 
     document.querySelector('#next-question .reply-pendent').addEventListener('click', function(){
@@ -419,15 +479,14 @@
         nextQuestion();
         game.currentQuestion = game.replyLater;
         setQuestion(game.currentQuestion);
-        document.getElementById('next-question').style.display = 'none';
-        document.getElementById('game').style.display = 'flex';
+        document.getElementById('next-question').classList.add('hide');
+        document.getElementById('game').classList.remove('hide');
         document.querySelector('.reply-later').textContent = 'Reply Later (0)';
         document.querySelector('.reply-later').disabled = false;
     });
 
     document.querySelector('#final-result .restart').addEventListener('click', function(){
         //Avoid JS DOM Manipulation
-        if(game.gameOver())
+        if(game.gameOver() == true)
             setUp();
     });
-})();
