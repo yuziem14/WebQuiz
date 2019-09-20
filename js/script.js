@@ -47,7 +47,7 @@
 
     //Checks if the player selected the correct answer
     Game.prototype.reply = function (selectedAnswer){
-        let correct = this.currentQuestion.correct_answer == selectedAnswer;;
+        let correct = this.currentQuestion.correct_answer == selectedAnswer;
         
         this.replied.push(this.currentQuestion);
         this.player.questionsReplied = this.replied.length;
@@ -160,7 +160,8 @@
     async function requestQuestion(amount){
         let token;
         let request;
-        let response;
+        let response = undefined;
+        localStorage.setItem('pending', 1);
 
         //Get the token and then generate the API URL
         token = localStorage.getItem('token');
@@ -177,12 +178,16 @@
                 response = await axios.get(`${request}&token=${token}`);
                 console.log(response);
             }
-
-            return response;
         } catch (error) {
             console.log(error);
-            return Promise.reject(error);
+            response = Promise.reject(error);
         }
+
+        if(response != undefined)
+            localStorage.setItem('pending', 0);
+
+        console.log(response);
+        return response;
     }
 
     async function createAPIToken(){
@@ -319,7 +324,7 @@
                     document.getElementById('game').classList.remove('hide');
                     document.getElementById('next-question').classList.add('hide');
                 } else if(response_code == 4) {
-                    swal('Congratulations', 'This level of this category is finished', 'success');
+                    swal('Congratulations', 'This level of this category is finished!', 'success');
                 }
             });
     });
@@ -478,6 +483,7 @@
         
         nextQuestion();
         game.currentQuestion = game.replyLater;
+        game.replyLater = undefined;
         setQuestion(game.currentQuestion);
         document.getElementById('next-question').classList.add('hide');
         document.getElementById('game').classList.remove('hide');
@@ -487,6 +493,6 @@
 
     document.querySelector('#final-result .restart').addEventListener('click', function(){
         //Avoid JS DOM Manipulation
-        if(game.gameOver() == true)
+        if(game.gameOver())
             setUp();
     });
