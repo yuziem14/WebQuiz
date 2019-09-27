@@ -265,6 +265,10 @@ label {
     margin: 20px 0;
 }
 
+.icon-result {
+    background-image: url('../img/trophy.png');
+}
+
 .result {
     width: 100%;
     padding: 50px 0;
@@ -307,23 +311,8 @@ label {
     transition: 1s;
 }
 
-.winner {
-    background-color: #2ecc71;
-    transition: 1s;
-}
-
-.winner-icon {
-    background-image: url('../img/trophy.png');
-}
-
-.loser {
-    font-weight: 700;
-    background-color: #d63031;
-    transition: 1s;
-}
-
-.loser-icon {
-    background-image: url('../img/fail.png');
+.hide {
+    display: none;
 }
 
 /* <-- Responsive [Media Queries] --> */
