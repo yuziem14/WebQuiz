@@ -399,10 +399,13 @@
     document.querySelector('.reply-later').addEventListener('click', () => {
         let question = undefined;
 
-        if (game.currentQuestion == undefined || localStorage.getItem('pending') == '1' || game.replyLater != undefined) {
+        if (game.replyLater != undefined) {
             document.querySelector('.reply-later').disabled = true;
             return;
         }
+
+        if (game.currentQuestion == undefined || localStorage.getItem('pending') == '1')
+            return;
 
         requestQuestion(1)
             .then((json) => {
